@@ -1,0 +1,43 @@
+DATABASE ANALYTICS DOCUMENTATION
+
+
+1. Query Design Choices
+
+• All queries were written for MySQL compatibility.
+• Standard SQL features like GROUP BY, JOINs, aggregate functions, and window functions were used.
+• Common Table Expressions (CTEs) were used where MySQL version supported it.
+• The queries aimed to be efficient and readable, supporting future scaling and clarity.
+
+Examples of design choices include:
+- Using SUM() + GROUP BY to compute lifetime value (LTV)
+- Using DATE_FORMAT() to group by months
+- Using window functions like NTILE() for user segmentation into spend tiers
+- Using dynamic date filtering with CURDATE() for time-based reporting
+
+
+
+
+2. INDEXING STRATEGIES
+
+Recommended indexes to optimize performance:
+
+Table               Recommended Index
+------------------  ---------------------------------------------------
+Orders              (user_id), (order_date)
+OrderItems          (order_id), (product_id)
+Products            (product_id)
+Users               (user_id)
+MarketingCampaigns  (user_id), (campaign_start_date, campaign_end_date)
+
+
+
+
+
+3. Query-Specific Assumptions
+
+• Dates are assumed to be clean and consistent (e.g., no NULL order dates).
+• Purchases are inferred from records in the Orders and OrderItems tables.
+• Retention is based on the assumption that purchasing in back-to-back months means retention.
+• Campaign conversion assumes a "conversion" is any purchase made during the campaign period.
+• Each marketing campaign is associated with a single user.
+• The database does not track order status (e.g., canceled orders were not considered).

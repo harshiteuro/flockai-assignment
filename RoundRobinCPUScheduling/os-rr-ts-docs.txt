@@ -1,0 +1,49 @@
+Task Scheduler Documentation
+
+
+
+
+1. Design Choices
+
+a. Task Structure
+- Each task has a unique task_id, priority (lower number = higher priority), and processing_time (in seconds).
+- Simulates real-world tasks with different urgency and duration.
+
+b. Scheduling Algorithm
+- Used priority queues (dictionary of deques) where keys are priority levels.
+- Within each priority, tasks are scheduled using round-robin (FIFO order).
+- Ensures fairness within priority while maintaining high-priority preference.
+
+c. Time Slicing
+- Fixed time slice (1 second) used to simulate round-robin execution.
+- Tasks are re-queued if not completed within the current time slice.
+
+
+
+
+
+2. Synchronization Strategies
+
+a. Thread Safety
+- Shared resources like task_queues and task_status are protected using threading.Lock().
+- Ensures no race conditions during concurrent access.
+
+b. Worker Threads
+- Fixed pool of worker threads fetch tasks based on priority and round-robin.
+- Threads run in infinite loop and handle task execution respecting time slices.
+
+c. Monitor Thread
+- A separate thread logs the current status of tasks (queued, running, completed).
+- Uses locking to read shared data safely.
+
+
+
+
+3. Assumptions Made
+- Time slice set to 1 second.
+- Tasks are manually added using add_task() method (extendable to support APIs).
+- All tasks are assumed to be finite and eventually complete.
+- Designed for limited worker threads (2-4) in demo context.
+- Using the priority to put task in ready queue instead of arrival time.
+- In-memory task management only (no persistent storage).
+- Stopping the main thread to track and monitor the task statuss
